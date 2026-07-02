@@ -6,7 +6,7 @@ This repository contains the **minimal, reproducible** code for the method descr
 
 ## Method overview
 
-AnisoProp performs slice-wise encoding with a frozen DINOv3 ViT-B/16 backbone and propagates segmentation state along the depth (z) axis with a **spacing-aware** hybrid state-space model. The key idea is that state transitions and positional embeddings are modulated by the **real physical slice spacing (Δz)** rather than by discrete slice indices, which makes propagation robust to anisotropic / variable-thickness volumes. Interactive prompts (reference slice + clicks) and a memory bank keep long-volume inference stable.
+AnisoProp performs slice-wise encoding with a DINOv3 ViT-B/16 backbone and propagates segmentation state along the depth (z) axis with a **spacing-aware** hybrid state-space model. The key idea is that state transitions and positional embeddings are modulated by the **real physical slice spacing (Δz)** rather than by discrete slice indices, which makes propagation robust to anisotropic / variable-thickness volumes. Interactive prompts (reference slice + clicks) and a memory bank keep long-volume inference stable.
 
 ## File map
 
@@ -14,7 +14,7 @@ AnisoProp performs slice-wise encoding with a frozen DINOv3 ViT-B/16 backbone an
 |------|------|
 | `model/mamba3/physio_mamba_primitives.py` | Core: metric/Δz-aware state dynamics + Segmentation-MRoPE positional encoding |
 | `model/mamba3/mimo_adapter.py` | `PhysioMambaBlock` — depth-wise recurrent propagation block |
-| `model/frozen_dinov3_multi_modal_seg.py` | Frozen DINOv3 encoder wrapper + FPN decoder |
+| `model/frozen_dinov3_multi_modal_seg.py` | DINOv3 encoder wrapper + FPN decoder |
 | `model/interactive/interactive_model.py` | Main model `DINOv3PhysioMambaInteractive` |
 | `model/interactive/reference_encoder.py` | Reference-slice / click prompt (bounded prompt memory) encoding |
 | `model/interactive/cross_frame_matching.py` | Cross-frame matching + `MemoryBank` for drift-free long-volume inference |
