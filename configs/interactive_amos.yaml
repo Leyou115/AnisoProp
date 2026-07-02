@@ -1,0 +1,39 @@
+experiment:
+  name: "interactive_amos_physio_mamba"
+  output_dir: "outputs/interactive_amos_v1"
+
+data:
+  root_dir: "data/amos22_preprocessed"  # Adjust to actual path
+  seq_length: 8
+  train_seq_length: 32
+  crop_size: [512, 512]
+  num_workers: 8
+  max_jump: 5 # Randomly skip 1-5 slices between frames.
+  enable_zoom: true # Optimization for small organs
+  zoom_ratio: 0.5 # 50% chance to zoom in on ROI
+
+model:
+  name: "dinov3_vitb16"
+  pretrained_weights: "weights/dinov3_vitb16_pretrain_lvd1689m.pth"
+  d_state: 16
+  dt_rank: 8
+  expand: 2
+  num_target_tokens: 64
+  use_mamba: true
+  use_parallel_scan: false
+  rope_type: "segmentation"
+  unfreeze_last_n_blocks: 4
+
+training:
+  epochs: 50
+  batch_size: 8  # Adjust based on GPU memory (e.g., 2 per GPU for 4 GPUs)
+  train_chunk_size: 8
+  learning_rate: 1e-4
+  weight_decay: 0.01
+  use_amp: true
+  val_every: 5
+  save_every: 10
+
+loss:
+  dice_weight: 0.7
+  bce_weight: 0.3
