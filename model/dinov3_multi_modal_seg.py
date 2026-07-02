@@ -1,10 +1,10 @@
 """
-Frozen DINOv3 based multi-modal medical segmentation modules.
+DINOv3 based multi-modal medical segmentation modules.
 
 This file provides the following building blocks that are shared across the
 project:
 
-1. ``FrozenDINOv3Encoder`` – wraps a ViT/DINOv3 style backbone, optionally
+1. ``DINOv3Encoder`` – wraps a ViT/DINOv3 style backbone, optionally
    loads pretrained weights, freezes the encoder, and exposes intermediate
    token maps for Feature Pyramid style decoding.
 2. ``MultiModalFusion`` – learns attention weights across an arbitrary number
@@ -13,7 +13,7 @@ project:
    high-resolution 2D feature maps.
 4. ``CombinedLoss`` – Dice + Cross-Entropy hybrid loss with optional class
    re-weighting.
-5. ``FrozenDINOv3MultiModalSeg`` – end-to-end segmentation model that ties
+5. ``DINOv3MultiModalSeg`` – end-to-end segmentation model that ties
    the above components together.
 
 The implementation follows the architecture documented in
@@ -66,7 +66,7 @@ def _build_backbone(model_name: str, image_size: int) -> DinoVisionTransformer:
         kwargs['patch_size'] = 14
         return vit_giant2(**kwargs)
     else:
-        print(f"[FrozenDINOv3Encoder] Unknown model name {model_name}, defaulting to vit_base")
+        print(f"[DINOv3Encoder] Unknown model name {model_name}, defaulting to vit_base")
         return vit_base(**kwargs)
 
 
@@ -76,10 +76,10 @@ def _load_checkpoint(model: nn.Module, checkpoint_path: str) -> None:
         return
     ckpt_file = Path(checkpoint_path)
     if not ckpt_file.exists():
-        print(f"[FrozenDINOv3Encoder] Warning: Pretrained weights not found at {checkpoint_path}")
+        print(f"[DINOv3Encoder] Warning: Pretrained weights not found at {checkpoint_path}")
         return
 
-    print(f"[FrozenDINOv3Encoder] Loading weights from {checkpoint_path}...")
+    print(f"[DINOv3Encoder] Loading weights from {checkpoint_path}...")
     checkpoint = torch.load(str(ckpt_file), map_location="cpu")
     
     if isinstance(checkpoint, dict):
@@ -106,15 +106,15 @@ def _load_checkpoint(model: nn.Module, checkpoint_path: str) -> None:
     unexpected_filtered = [k for k in unexpected if not k.startswith('head.')]
     
     if missing_filtered:
-        print(f"[FrozenDINOv3Encoder] Missing keys ({len(missing_filtered)}): {missing_filtered[:5]}...")
+        print(f"[DINOv3Encoder] Missing keys ({len(missing_filtered)}): {missing_filtered[:5]}...")
     else:
-        print(f"[FrozenDINOv3Encoder] ✓ All encoder weights loaded successfully!")
+        print(f"[DINOv3Encoder] ✓ All encoder weights loaded successfully!")
     
     if unexpected_filtered:
-        print(f"[FrozenDINOv3Encoder] Unexpected keys ({len(unexpected_filtered)}): {unexpected_filtered[:5]}...")
+        print(f"[DINOv3Encoder] Unexpected keys ({len(unexpected_filtered)}): {unexpected_filtered[:5]}...")
 
 
-class FrozenDINOv3Encoder(nn.Module):
+class DINOv3Encoder(nn.Module):
     """Wrapper around a ViT/DINOv3 backbone that exposes patch features.
 
     Args:
@@ -453,8 +453,8 @@ class CombinedLoss(nn.Module):
         return loss.mean()
 
 
-class FrozenDINOv3MultiModalSeg(nn.Module):
-    """End-to-end segmentation model built on top of a frozen DINOv3 encoder."""
+class DINOv3MultiModalSeg(nn.Module):
+    """End-to-end segmentation model built on top of a DINOv3 encoder."""
 
     def __init__(
         self,
@@ -477,7 +477,7 @@ class FrozenDINOv3MultiModalSeg(nn.Module):
         self.num_modalities = max(1, num_modalities)
         self.use_image_adapter = bool(use_image_adapter)
 
-        self.encoder = FrozenDINOv3Encoder(
+        self.encoder = DINOv3Encoder(
             model_name=model_name,
             pretrained_weights=pretrained_weights,
             freeze=freeze_encoder,
@@ -559,9 +559,9 @@ class FrozenDINOv3MultiModalSeg(nn.Module):
 
 
 __all__ = [
-    "FrozenDINOv3Encoder",
+    "DINOv3Encoder",
     "MultiModalFusion",
     "FeaturePyramidDecoder",
     "CombinedLoss",
-    "FrozenDINOv3MultiModalSeg",
+    "DINOv3MultiModalSeg",
 ]

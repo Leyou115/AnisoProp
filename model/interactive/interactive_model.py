@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
-from model.frozen_dinov3_multi_modal_seg import FrozenDINOv3Encoder, FeaturePyramidDecoder
+from model.dinov3_multi_modal_seg import DINOv3Encoder, FeaturePyramidDecoder
 from model.mamba3.mimo_adapter import PhysioMambaBlock
 from .reference_encoder import ReferenceEncoder, ClickEncoder
 from .cross_frame_matching import CrossFrameMatching, DINOFeatureMatcher, MemoryBank
@@ -83,8 +83,8 @@ class DINOv3PhysioMambaInteractive(nn.Module):
         self.use_metric_positions = use_metric_positions
         
         # ==================== Encoder ====================
-        print("[Debug] Initializing FrozenDINOv3Encoder...", flush=True)
-        self.encoder = FrozenDINOv3Encoder(
+        print("[Debug] Initializing DINOv3Encoder...", flush=True)
+        self.encoder = DINOv3Encoder(
             model_name=model_name,
             pretrained_weights=pretrained_weights,
             freeze=True,

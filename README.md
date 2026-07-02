@@ -14,7 +14,7 @@ AnisoProp performs slice-wise encoding with a DINOv3 ViT-B/16 backbone and propa
 |------|------|
 | `model/mamba3/physio_mamba_primitives.py` | Core: metric/Δz-aware state dynamics + Segmentation-MRoPE positional encoding |
 | `model/mamba3/mimo_adapter.py` | `PhysioMambaBlock` — depth-wise recurrent propagation block |
-| `model/frozen_dinov3_multi_modal_seg.py` | DINOv3 encoder wrapper + FPN decoder |
+| `model/dinov3_multi_modal_seg.py` | DINOv3 encoder wrapper + FPN decoder |
 | `model/interactive/interactive_model.py` | Main model `DINOv3PhysioMambaInteractive` |
 | `model/interactive/reference_encoder.py` | Reference-slice / click prompt (bounded prompt memory) encoding |
 | `model/interactive/cross_frame_matching.py` | Cross-frame matching + `MemoryBank` for drift-free long-volume inference |
